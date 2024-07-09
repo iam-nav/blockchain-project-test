@@ -12,8 +12,10 @@ export default async function handler(
     switch (method) {
       case "GET":
         await handleGET(req, res);
+        break; // Exit the switch statement after handling GET request
       default:
         throwMethodNotAllowed(res, method, ["GET"]);
+        break; // Exit the switch statement for other methods
     }
   } catch (error: any) {
     res.status(400).json({
@@ -24,10 +26,14 @@ export default async function handler(
   }
 }
 
-// Get assets list
+// Get blockchain list
 const handleGET = async (req: NextApiRequest, res: NextApiResponse) => {
-  const blockchainList = await fetchBlockchainList();
-  res.status(200).json({
-    data: blockchainList,
-  });
+  try {
+    const blockchainList = await fetchBlockchainList();
+    res.status(200).json({
+      data: blockchainList,
+    });
+  } catch (error) {
+    throw new Error(`Failed to fetch blockchain list: ${error}`);
+  }
 };
